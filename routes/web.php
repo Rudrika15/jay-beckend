@@ -4,14 +4,19 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LeaveController;
+use App\Http\Controllers\PartsController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\QrController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TeammemberController;
 use App\Http\Controllers\VersionController;
+use App\Http\Controllers\VisitorController;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/', function () {
+Route::get('/login', function () {
     return view('auth/login');
 });
 // Route::get('/', function () {
@@ -22,7 +27,7 @@ Auth::routes();
 
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('/admin-home', [HomeController::class, 'index'])->name('home');
     Route::get('/approve/leave/{id}', [HomeController::class, 'leaveApproved'])->name('leave.approve');
     Route::resource('roles', RoleController::class);
 
@@ -33,6 +38,28 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/notification', [HomeController::class, 'addNotification'])->name('add.notification');
     Route::get('/notification/delete/{id}', [HomeController::class, 'deleteNotification'])->name('delete.notification');
     Route::get('/leave/report', [LeaveController::class, 'index'])->name('leave.report');
+
+    Route::get('/product-list', [ProductController::class, 'index'])->name('product.index');
+    Route::get('/product-create', [ProductController::class, 'create'])->name('product.create');
+    Route::post('/product-store', [ProductController::class, 'store'])->name('product.store');
+
+    Route::get('/parts-list', [PartsController::class, 'index'])->name('parts.index');
+    Route::get('/parts-create', [PartsController::class, 'create'])->name('parts.create');
+    Route::post('/parts-store', [PartsController::class, 'store'])->name('parts.store');
+
+    Route::get('/qr-list', [QrController::class, 'index'])->name('qr.index');
+
+
+    // teams routes
+    Route::get('/team-list', [TeamController::class, 'index'])->name('team.index');
+    Route::get('/team-create', [TeamController::class, 'create'])->name('team.create');
+    Route::post('/team-store', [TeamController::class, 'store'])->name('team.store');
+    Route::get('/team-delete/{id?}', [TeamController::class, 'destroy'])->name('team.delete');
+
+
+    //Team members routes
+    Route::get('/team-member-list/{id?}', [TeammemberController::class, 'index'])->name('team.member');
+    Route::post('/team-member-create', [TeammemberController::class, 'store'])->name('team.member.store');
 });
 
 Route::get('happy-birthday', [UserController::class, 'wish']);
@@ -40,9 +67,15 @@ Route::get('privacy-policy', [UserController::class, 'privacyPolicy']);
 
 //  version Routes
 
-Route::get('version/index',[VersionController::class,'index'])->name('version.index');
-Route::get('version/create',[VersionController::class,'create'])->name('version.create');
-Route::post('version/store',[VersionController::class,'store'])->name('version.store');
-Route::get('version/edit/{id?}',[VersionController::class,'edit'])->name('version.edit');
-Route::post('version/update',[VersionController::class,'update'])->name('version.update');
-Route::get('version/delete/{id?}',[VersionController::class,'delete'])->name('version.delete');
+Route::get('version/index', [VersionController::class, 'index'])->name('version.index');
+Route::get('version/create', [VersionController::class, 'create'])->name('version.create');
+Route::post('version/store', [VersionController::class, 'store'])->name('version.store');
+Route::get('version/edit/{id?}', [VersionController::class, 'edit'])->name('version.edit');
+Route::post('version/update', [VersionController::class, 'update'])->name('version.update');
+Route::get('version/delete/{id?}', [VersionController::class, 'delete'])->name('version.delete');
+
+
+
+
+//visitor routes
+Route::get('/', [VisitorController::class, 'homepage'])->name('visitor.home');

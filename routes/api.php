@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\Api\AdminController;
+use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserApiController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\TaskController;
+use Spatie\FlareClient\Api;
 
 // use App\Http\Controllers\Api\AttendanceController;
 Route::post('/auth/register', [AuthController::class, 'createUser']);
@@ -41,6 +43,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/updateTask', [TaskController::class, 'updateTask']);
     Route::get('/allTask', [TaskController::class, 'allTask']);
     Route::get('/todaysLeave', [TaskController::class, 'todaysLeave']);
+
+
+
+    Route::get('/client-list', [ApiController::class, 'clientlist']);
+    Route::post('/create-call', [ApiController::class, 'createcall']);
+    Route::get('/list-call', [ApiController::class, 'getCalllog']);
 });
 
 Route::get('getVersion', [TaskController::class, 'version']);

@@ -85,6 +85,26 @@
                     <i class="fas fa-fw fa-users"></i>
                     <span>Users</span></a>
             </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ route('product.index') }}">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Product </span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ route('parts.index') }}">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Parts </span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ route('qr.index') }}">
+                    <i class='fas fa-qrcode'></i>
+                    <span>Qr </span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ route('team.index') }}">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Teams </span></a>
+            </li>
 
             <li class="nav-item active">
                 <a class="nav-link" href="{{ route('roles.index') }}">
@@ -160,10 +180,11 @@
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
+                                    Logoutd
                                 </a>
 
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                    class="d-none">
                                     @csrf
                                 </form>
                             </div>

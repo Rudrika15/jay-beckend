@@ -1,0 +1,49 @@
+@extends('layouts.app')
+@section('title', 'Product')
+@section('content')
+
+    @if (session('success'))
+        <div class="alert alert-success" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <div class="card">
+        <div class="card-header py-3 d-flex justify-content-between h5">
+            <div class="pt-3">
+                Product list
+            </div>
+            @if (auth()->user()->can('user-create'))
+                <div class="">
+                    <a class="btn btn-secondary mb-2" href="{{ route('product.create') }}"><i class="fa fa-plus"></i> Create
+                        New
+                        Product</a>
+                </div>
+            @endif
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>No</th>
+                        <th>Name</th>
+                        <th>Detail</th>
+                        <th>Image</th>
+                        <th width="280px">Action</th>
+                    </tr>
+                    @php $no = 1; @endphp
+                    @foreach ($data as $key => $product)
+                        <tr>
+                            <td>{{ $no++ }}</td>
+                            <td>{{ $product->name }}</td>
+                            <td>{{ $product->detail }}</td>
+                            <td><img src="{{ asset('images/' . $product->image) }}" alt="" width="100px"></td>
+                        </tr>
+                    @endforeach
+
+                </table>
+            </div>
+        </div>
+    </div>
+    {!! $data->links('pagination::bootstrap-5') !!}
+@endsection
