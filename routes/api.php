@@ -49,6 +49,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/client-list', [ApiController::class, 'clientlist']);
     Route::post('/create-call', [ApiController::class, 'createcall']);
     Route::get('/list-call', [ApiController::class, 'getCalllog']);
+    Route::get('/team-list', [ApiController::class, 'getTeams']);
+    Route::get('/chage-status', [ApiController::class, 'chageStatus']);
+    Route::get('/get-call-detail/{id}', [ApiController::class, 'getCallDetail']);
+
+    Route::get('/parts-list', [ApiController::class, 'getParts']);
+    ROute::get('call-list', [ApiController::class, 'callList']);
+    ROute::get('client-call-list', [ApiController::class, 'clientSideCallList']);
+
+
+    Route::post('/assign-task', [ApiController::class, 'assignTask']);
+    Route::get('/qr-list', [ApiController::class, 'qrList']);
 });
 
 Route::get('getVersion', [TaskController::class, 'version']);

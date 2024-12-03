@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('calllogs', function (Blueprint $table) {
+        Schema::create('assigns', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
             $table->integer('userId');
-            $table->text('photo');
-            $table->text('description');
-            $table->text('address');
-            $table->enum('status', ['pending', 'cancelled', 'allocated', 'complated', 'waiting'])->default('pending');
+            $table->integer('callId');
             $table->timestamps();
         });
     }
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('calllogs');
+        Schema::dropIfExists('assigns');
     }
 };

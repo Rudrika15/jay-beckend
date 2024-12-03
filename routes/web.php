@@ -46,8 +46,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/parts-list', [PartsController::class, 'index'])->name('parts.index');
     Route::get('/parts-create', [PartsController::class, 'create'])->name('parts.create');
     Route::post('/parts-store', [PartsController::class, 'store'])->name('parts.store');
+    Route::get('/edit/{id?}/{name}', [PartsController::class, 'edit'])->name('parts.edit');
+    Route::post('/parts-update', [PartsController::class, 'update'])->name('parts.update');
+    Route::get('/delete/{id?}/{name}', [PartsController::class, 'delete'])->name('parts.delete');
 
     Route::get('/qr-list', [QrController::class, 'index'])->name('qr.index');
+    Route::get('/qr-edit/{id?}', [QrController::class, 'edit'])->name('qr.edit');
+    Route::post('/qr-update', [QrController::class, 'update'])->name('qr.update');
+    Route::get('/qr-delete/{id?}', [QrController::class, 'destroy'])->name('qr.delete');
 
 
     // teams routes
@@ -79,3 +85,6 @@ Route::get('version/delete/{id?}', [VersionController::class, 'delete'])->name('
 
 //visitor routes
 Route::get('/', [VisitorController::class, 'homepage'])->name('visitor.home');
+Route::get('/about', [VisitorController::class, 'about'])->name('visitor.about');
+Route::get('/product', [VisitorController::class, 'product'])->name('visitor.product');
+Route::get('/contact', [VisitorController::class, 'contact'])->name('visitor.contact');

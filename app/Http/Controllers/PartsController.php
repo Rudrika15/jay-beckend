@@ -14,6 +14,7 @@ class PartsController extends Controller
         $data = Product::where('type', 'parts')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
+        // ->get();
         return view('part.index', compact('data'));
     }
     public function create()
@@ -46,5 +47,38 @@ class PartsController extends Controller
         $product->save();
 
         return redirect()->back()->with('success', 'Product created successfully.');
+    }
+    public function edit($id)
+    {
+        $data = Product::find($id);
+        return view('part.edit', compact('data'));
+    }
+
+    public function update(Request $request)
+    {
+        $id = $request->id;
+        $data = Product::find($id);
+        $data->name = $request->name;
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images'), $filename);
+            $data->image = $filename;
+        }
+        $data->detail = $request->detail;
+        $data->save();
+        return redirect()->back()->with('success', 'Product Updated Successfully');
+    }
+
+    public function delete($id, $name)
+    {
+        $data = Product::find($id);
+        $data->delete();
+        if ($name == "product") {
+            return redirect()->route('product.index')->with('success', 'Product Deleted Successfully');
+        } else {
+            return redirect()->route('parts.index')->with('success', 'Parts Deleted Successfully');
+        }
     }
 }

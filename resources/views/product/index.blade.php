@@ -38,6 +38,16 @@
                             <td>{{ $product->name }}</td>
                             <td>{{ $product->detail }}</td>
                             <td><img src="{{ asset('images/' . $product->image) }}" alt="" width="100px"></td>
+                            <td>
+                                <a href="{{ route('parts.edit', ['id' => $product->id, 'name' => 'product']) }}"
+                                    class="btn btn-info">
+                                    <i class="fas fa-edit"></i>Edit
+                                </a>
+                                <a href="{{ route('parts.delete', ['id' => $product->id, 'name' => 'product']) }}"
+                                    class="btn btn-danger">
+                                    <i class="fas fa-trash"></i>Delete
+                                </a>
+                            </td>
                         </tr>
                     @endforeach
 
