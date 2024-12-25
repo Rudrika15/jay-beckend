@@ -56,6 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/parts-list', [ApiController::class, 'getParts']);
     ROute::get('call-list', [ApiController::class, 'callList']);
     ROute::get('client-call-list', [ApiController::class, 'clientSideCallList']);
+    Route::post('update-call', [ApiController::class, 'updateCall']);
 
 
     Route::post('/assign-task', [ApiController::class, 'assignTask']);

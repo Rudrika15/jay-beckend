@@ -213,8 +213,6 @@ class ApiController extends Controller
     }
     public function clientSideCallList(Request $request)
     {
-        // part, payment method(cash,qr,debit), total charge , qr_id(optional)
-
         try {
 
             $id =  Auth::user()->id;
@@ -243,7 +241,42 @@ class ApiController extends Controller
                 'data' => []
             ]);
         }
+        // part, payment method(cash,qr,debit), total charge , qr_id(optional)
+
     }
+
+    public function updateCall(Request $request)
+    {
+        try {
+            $request->validate([
+                'id' => 'required',
+                'part_name' => 'required',
+                'payment_method' => 'required',
+                'total_charge' => 'required'
+            ]);
+            $call = Calllog::find($request->id);
+            $call->part_name = $request->part_name;
+            $call->payment_method = $request->payment_method;
+            $call->total_charge = $request->total_charge;
+            $call->qr_id = $request->qr_id ?? null;
+            $call->status = 'completed';
+            $call->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Call updated successfully.',
+                'data' => $call
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+                'data' => []
+            ]);
+        }
+    }
+
     public function qrList()
     {
         try {
