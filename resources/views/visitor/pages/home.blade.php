@@ -26,17 +26,14 @@
     <!-- slider -->
     <div class="container">
         <div class="row py-5">
-            <h1 class="text-center">Jay infotech</h1>
+            <h1 class="text-center">Your Ultimate CCTV Security Solution</h1>
             <p class="text-justify">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga aperiam veritatis voluptate provident odit
-                labore maxime quia vitae enim sint, itaque laborum, explicabo nemo doloremque voluptatem deleniti
-                perferendis porro adipisci.
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga aperiam veritatis voluptate provident odit
-                labore maxime quia vitae enim sint, itaque laborum, explicabo nemo doloremque voluptatem deleniti
-                perferendis porro adipisci.
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga aperiam veritatis voluptate provident odit
-                labore maxime quia vitae enim sint, itaque laborum, explicabo nemo doloremque voluptatem deleniti
-                perferendis porro adipisci.
+                At Jay Infotech, we specialize in providing cutting-edge surveillance technology designed to keep your home,
+                business, and loved ones safe and secure. Our advanced CCTV solutions ensure round-the-clock monitoring with
+                crystal-clear visuals, giving you complete peace of mind. Whether you need to protect your property, deter
+                potential threats, or simply stay connected to what matters most, we offer tailored systems to meet your
+                unique security needs. Trust us to deliver reliable, high-performance technology that safeguards every
+                aspect of your life.
             </p>
         </div>
         <div class="row py-5">
@@ -47,9 +44,10 @@
                         <i class="bi bi-webcam"></i>
                     </p>
                     <div class="card-body">
-                        <h5 class="card-title text-center">Cctv Camera</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                            the card's content.</p>
+                        <h5 class="card-title text-center">Advanced CCTV Camera Systems</h5>
+                        <p class="card-text">Monitor every corner of your property with high-definition cameras designed for
+                            unmatched clarity and reliability. Perfect for homes and businesses, our CCTV systems ensure
+                            your safety around the clock.</p>
 
                     </div>
                 </div>
@@ -61,10 +59,10 @@
                         <i class="bi bi-fingerprint"></i>
                     </p>
                     <div class="card-body">
-                        <h5 class="card-title text-center">Biometric</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                            the card's content.</p>
-
+                        <h5 class="card-title text-center">Secure Biometric Solutions</h5>
+                        <p class="card-text">Enhance security and simplify access control with cutting-edge biometric
+                            systems. From fingerprint scanning to facial recognition, our solutions ensure only authorized
+                            access to your spaces.</p>
                     </div>
                 </div>
             </div>
@@ -75,9 +73,10 @@
                         <i class="bi bi-lock"></i>
                     </p>
                     <div class="card-body">
-                        <h5 class="card-title text-center">Security system</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                            the card's content.</p>
+                        <h5 class="card-title text-center">Comprehensive Security Systems</h5>
+                        <p class="card-text">Safeguard your home or workplace with our integrated security systems.
+                            Featuring alarms, sensors, and more, our systems provide seamless protection for ultimate peace
+                            of mind.</p>
 
                     </div>
                 </div>

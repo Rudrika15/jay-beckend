@@ -46,7 +46,7 @@
                         <input type="checkbox" class="form-check-input" id="exampleCheck1">
                         <label class="form-check-label" for="exampleCheck1">Check me out</label>
                     </div>
-                    <button type="submit" class="btn btn-info text-white fw-bold">Submit</button>
+                    <button type="submit" class="btn text-white fw-bold" style="background-color: #f16923;">Submit</button>
                 </form>
             </div>
             <div class="col-md-6 px-5">

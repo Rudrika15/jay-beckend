@@ -254,6 +254,7 @@ class ApiController extends Controller
                 'payment_method' => 'required',
                 'total_charge' => 'required'
             ]);
+
             $call = Calllog::find($request->id);
             $call->part_name = $request->part_name;
             $call->payment_method = $request->payment_method;

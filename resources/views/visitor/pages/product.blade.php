@@ -32,7 +32,6 @@
                             <h5 class="card-title">
                                 {{ $data->name }}
                             </h5>
-
                         </div>
                     </div>
                 </div>

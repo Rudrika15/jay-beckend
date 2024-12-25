@@ -18,6 +18,10 @@ return new class extends Migration
             $table->text('photo');
             $table->text('description');
             $table->text('address');
+            $table->text('part_name')->nullable();
+            $table->enum('payment_method', ['cash', 'qr', 'debit'])->nullable();
+            $table->integer('total_charge')->nullable();
+            $table->integer('qr_id')->nullable();
             $table->enum('status', ['pending', 'cancelled', 'allocated', 'complated', 'waiting'])->default('pending');
             $table->timestamps();
         });

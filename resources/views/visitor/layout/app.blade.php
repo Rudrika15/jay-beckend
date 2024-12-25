@@ -8,7 +8,8 @@
 
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <title>@yield('title')</title>
+    <title>
+        @yield('title')</title>
     <style>
         .client-logo {
             padding-top: 10px;
@@ -31,7 +32,7 @@
 </head>
 
 <body>
-    <div class="" style="width: 100%;background-color: #0dcaf0;">
+    <div class="" style="width: 100%;background-color: #f16923;">
 
         <div class="container">
             <div class="row">
@@ -48,7 +49,7 @@
     <nav class="navbar navbar-expand-lg navbar-light ">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <img src="{{ asset('img/logo-2.jpg') }}" width="250" alt="">
+                <img src="{{ asset('img/logo-2.jpg') }}" class="img-fluid" width="250" alt="">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
