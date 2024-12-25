@@ -213,12 +213,13 @@ class ApiController extends Controller
     }
     public function clientSideCallList(Request $request)
     {
+        // part, payment method(cash,qr,debit), total charge , qr_id(optional)
 
         try {
 
             $id =  Auth::user()->id;
 
-            $data = Calllog::where('userId', $id);
+            $data = Calllog::where('userId', $id)->with('assign');
             if ($request->date) {
 
                 $data = $data->whereDate('date', $request->date);
