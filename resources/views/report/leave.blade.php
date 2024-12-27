@@ -37,35 +37,37 @@
 
         </div>
         <div class="card-body">
-            <table class="table table-bordered mt-4">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Name</th>
-                        <th>Phone</th>
-                        <th>Email</th>
-                        <th>Total Leave</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php $no = 1; @endphp
-                    @foreach ($users as $user)
-                        @if (auth()->user()->roles[0]->name == 'Admin' || auth()->user()->roles[0]->name == 'admin')
-                            <tr>
-                                <td>{{ $no++ }}</td>
-                                <td>{{ $user->name }}</td>
-                                <td>{{ $user->phone }}</td>
-                                <td>{{ $user->email }}</td>
-                                <td>
-                                    {{-- Display the total leave for the user --}}
-                                    {{ $userLeaveCounts[$user->id] ?? 0 }}
-                                </td>
-                            </tr>
-                        @endif
-                    @endforeach
-                </tbody>
-            </table>
-            
+            <div class="table table-responsive">
+                <table class="table table-bordered mt-4">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Total Leave</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php $no = 1; @endphp
+                        @foreach ($users as $user)
+                            @if (auth()->user()->roles[0]->name == 'Admin' || auth()->user()->roles[0]->name == 'admin')
+                                <tr>
+                                    <td>{{ $no++ }}</td>
+                                    <td>{{ $user->name }}</td>
+                                    <td>{{ $user->phone }}</td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>
+                                        {{-- Display the total leave for the user --}}
+                                        {{ $userLeaveCounts[$user->id] ?? 0 }}
+                                    </td>
+                                </tr>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
 
         </div>
     </div>

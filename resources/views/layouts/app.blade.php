@@ -9,8 +9,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon.png') }}" alt="faviconImg.png">
-    <title>FlipCode (Attendance Management)</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('img/final-logo-JayInfo.jpg') }}" alt="faviconImg.png">
+    <title>Jay Infotech</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
@@ -43,7 +43,7 @@
                 </div>
                 <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div> --}}
 
-                <img src="{{ asset('assets/img/logo.jpg') }}" class="img-fluid" alt="">
+                <img src="{{ asset('img/logo-2.jpg') }}" class="img-fluid" alt="">
             </a>
 
             <!-- Divider -->
@@ -124,7 +124,7 @@
             </li>
             <li class="nav-item active">
                 <a class="nav-link" href="{{ route('leave.report') }}">
-                    <i class="fas fa-fw fa-"></i>
+                    <i class="fas fa-fw fa-folder"></i>
                     <span>Leave reports</span></a>
             </li>
             <li class="nav-item active">
