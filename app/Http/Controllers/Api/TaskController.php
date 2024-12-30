@@ -186,7 +186,7 @@ class TaskController extends Controller
     public function todaysLeave(Request $request)
     {
 
-        $todayOnLeave = Leave::where('status', 'Approved')->with('user')
+        $todayOnLeave = Leave::with('user')
             ->whereDate('startDate', '<=', Carbon::today()->toDateString())
             ->whereDate('endDate', '>=', Carbon::today()->toDateString())
             ->paginate(10);
@@ -197,6 +197,4 @@ class TaskController extends Controller
             'data' => $todayOnLeave
         ]);
     }
-
-    
 }

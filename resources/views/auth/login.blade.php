@@ -67,18 +67,26 @@
                                         @csrf
                                         <div class="form-group">
                                             <input type="text" name="phone"
-                                                class="form-control form-control-user w-100" id="exampleInputEmail"
-                                                aria-describedby="emailHelp" placeholder="Enter Phone Number...">
+                                                class="form-control form-control-user w-100 @error('phone') is-invalid @enderror"
+                                                id="exampleInputEmail" aria-describedby="emailHelp"
+                                                placeholder="Enter Phone Number...">
+                                            @error('phone')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </div>
-                                        @error('phone')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
+
+
                                         <div class="form-group">
                                             <input type="password" name="password"
                                                 class="form-control form-control-user" id="exampleInputPassword"
-                                                placeholder="Password">
+                                                placeholder="Password" @error('password') is-invalid @enderror>
+                                            @error('password')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </div>
 
                                         <button type="submit" class="btn btn-primary btn-user btn-block">
