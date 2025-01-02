@@ -405,62 +405,69 @@ class AttendanceController extends Controller
 
     public function leaveRequest(Request $request)
     {
-        $rules = [
-            'startDate' => 'required',
-            'endDate' => 'required',
-            'reason' => 'required',
-            'leaveType' => 'required',
-        ];
+        try {
+            $rules = [
+                'startDate' => 'required',
+                'endDate' => 'required',
+                'reason' => 'required',
+                'leaveType' => 'required',
+            ];
 
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 200);
+            }
+
+            $userId = Auth::user()->id;
+            $leave = new Leave();
+            $leave->userId = $userId;
+            $leave->startDate = $request->startDate;
+            $leave->endDate = $request->endDate;
+            $leave->reason = $request->reason;
+            $leave->leaveType = $request->leaveType;
+            $leave->save();
+
+            $admins = User::whereHas('roles', function ($q) {
+                $q->where('name', 'admin');
+            })->get();
+
+            // Firebase initialization
+            $serviceAccountPath = storage_path('app/public/attendance.json');
+            $factory = (new Factory)->withServiceAccount($serviceAccountPath);
+            $messaging = $factory->createMessaging();
+
+            // Send Firebase notification directly in the function
+            foreach ($admins as $admin) {
+                $token = $admin->token;
+                if (!$token) {
+                    // Log or return a message if token is missing
+                    Log::error("Admin {$admin->name} does not have a valid Firebase token.");
+                    continue;
+                }
+
+                try {
+                    $message = CloudMessage::withTarget('token', $token)
+                        ->withNotification(FirebaseNotification::create('Leave Request', Auth::user()->name . ' has requested for leave.'));
+                    $messaging->send($message);
+                    // return "Notification sent successfully";
+                } catch (\Kreait\Firebase\Exception\Messaging\NotFound $e) {
+                    Log::error("Firebase token not found for admin: {$admin->name}, error: " . $e->getMessage());
+                }
+            }
+
             return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 200);
+                'message' => 'Leave request sent successfully',
+                'data' => $leave
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Leave request failed',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $userId = Auth::user()->id;
-        $leave = new Leave();
-        $leave->userId = $userId;
-        $leave->startDate = $request->startDate;
-        $leave->endDate = $request->endDate;
-        $leave->reason = $request->reason;
-        $leave->leaveType = $request->leaveType;
-        $leave->save();
-
-        $admins = User::whereHas('roles', function ($q) {
-            $q->where('name', 'admin');
-        })->get();
-
-        // Firebase initialization
-        $serviceAccountPath = storage_path('attendance.json');
-        $factory = (new Factory)->withServiceAccount($serviceAccountPath);
-        $messaging = $factory->createMessaging();
-
-        // Send Firebase notification directly in the function
-        foreach ($admins as $admin) {
-            $token = $admin->token;
-            if (!$token) {
-                // Log or return a message if token is missing
-                Log::error("Admin {$admin->name} does not have a valid Firebase token.");
-                continue;
-            }
-
-            try {
-                $message = CloudMessage::withTarget('token', $token)
-                    ->withNotification(FirebaseNotification::create('Leave Request', Auth::user()->name . ' has requested for leave.'));
-                $messaging->send($message);
-                // return "Notification sent successfully";
-            } catch (\Kreait\Firebase\Exception\Messaging\NotFound $e) {
-                Log::error("Firebase token not found for admin: {$admin->name}, error: " . $e->getMessage());
-            }
-        }
-
-        return response()->json([
-            'message' => 'Leave request sent successfully',
-            'data' => $leave
-        ], 201);
     }
 
 

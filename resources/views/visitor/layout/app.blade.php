@@ -59,17 +59,22 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ route('visitor.home') }}">Home</a>
+                        <a class="nav-link {{ Route::currentRouteName() == 'visitor.home' ? 'active' : '' }}"
+                            aria-current="page" href="{{ route('visitor.home') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " aria-current="page" href="{{ route('visitor.about') }}">About</a>
+                        <a class="nav-link {{ Route::currentRouteName() == 'visitor.about' ? 'active' : '' }} "
+                            aria-current="page" href="{{ route('visitor.about') }}">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " aria-current="page" href="{{ route('visitor.product') }}">Product</a>
+                        <a class="nav-link {{ Route::currentRouteName() == 'visitor.product' ? 'active' : '' }} "
+                            aria-current="page" href="{{ route('visitor.product') }}">Product</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " aria-current="page" href="{{ route('visitor.contact') }}">Contact</a>
+                        <a class="nav-link {{ Route::currentRouteName() == 'visitor.contact' ? 'active' : '' }} "
+                            aria-current="page" href="{{ route('visitor.contact') }}">Contact</a>
                     </li>
+
 
                     {{-- <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -134,6 +139,12 @@
                         </p>
                         <p>
                             <a href="{{ route('visitor.contact') }}" class="text-reset">Contact</a>
+                        </p>
+                        <p>
+                            <a href="{{ route('visitor.privacy') }}" class="text-reset">Privacy Policy</a>
+                        </p>
+                        <p>
+                            <a href="{{ route('visitor.terms') }}" class="text-reset">Terms and conditions</a>
                         </p>
                     </div>
                     <!-- Grid column -->

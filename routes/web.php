@@ -89,3 +89,5 @@ Route::get('/', [VisitorController::class, 'homepage'])->name('visitor.home');
 Route::get('/about', [VisitorController::class, 'about'])->name('visitor.about');
 Route::get('/product', [VisitorController::class, 'product'])->name('visitor.product');
 Route::get('/contact', [VisitorController::class, 'contact'])->name('visitor.contact');
+Route::get('/terms', [VisitorController::class, 'terms'])->name('visitor.terms');
+Route::get('/privacy', [VisitorController::class, 'privacy'])->name('visitor.privacy');

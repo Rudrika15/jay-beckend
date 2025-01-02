@@ -27,4 +27,12 @@ class VisitorController extends Controller
     {
         return view('visitor.pages.contact');
     }
+    public function terms()
+    {
+        return view('visitor.pages.terms');
+    }
+    public function privacy()
+    {
+        return view('visitor.pages.privacy');
+    }
 }
