@@ -18,10 +18,6 @@ class CallReportController extends Controller
             $query->where('name', 'User');
         })->get();
 
-        $clients = User::with('roles')->whereHas('roles', function ($query) {
-            $query->where('name', 'Client');
-        })->get();
-
         $qrs = Qr::all();
 
         $calls = Calllog::with(['user', 'assign.user']); // Assuming 'users' is a relationship in 'assign'.
@@ -36,6 +32,36 @@ class CallReportController extends Controller
             });
         }
 
+        if ($request->status) {
+            $calls = $calls->where('status', $request->status);
+        }
+
+        if (!$request->start_date && !$request->end_date && !$request->staff && !$request->client && !$request->status) {
+            $calls = $calls->with('user');
+        }
+        $calls = $calls->orderBy('id', 'desc')->paginate(5);
+        return view('callReport.callReport', compact('staffs', 'calls', 'qrs'));
+    }
+
+    public function callReportClient(Request $request)
+    {
+        $clients = User::with('roles')->whereHas('roles', function ($query) {
+            $query->where('name', 'Client');
+        })->get();
+
+        $qrs = Qr::all();
+
+        $calls = Calllog::with(['user', 'assign.user']); // Assuming 'users' is a relationship in 'assign'.
+
+        if ($request->start_date && $request->end_date) {
+            $calls = $calls->whereBetween('date', [$request->start_date, $request->end_date]);
+        }
+
+        if ($request->client_id) {
+            $calls = $calls->whereHas('user', function ($query) use ($request) {
+                $query->where('id', $request->client_id);
+            });
+        }
 
         if ($request->status) {
             $calls = $calls->where('status', $request->status);
@@ -44,8 +70,8 @@ class CallReportController extends Controller
         if (!$request->start_date && !$request->end_date && !$request->staff && !$request->client && !$request->status) {
             $calls = $calls->with('user');
         }
-        $calls = $calls->get();
-        return view('callReport.callReport', compact('staffs', 'clients', 'calls', 'qrs'));
+        $calls = $calls->orderBy('id', 'desc')->paginate(5);
+        return view('callReport.callReportClient', compact('calls', 'clients', 'qrs'));
     }
 
     public function callDetail($id)

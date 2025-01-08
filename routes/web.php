@@ -70,6 +70,7 @@ Route::group(['middleware' => ['auth', 'isAdmin']], function () {
     Route::post('/team-member-create', [TeammemberController::class, 'store'])->name('team.member.store');
 
     Route::get('/call-report', [CallReportController::class, 'callReport'])->name('call.report');
+    Route::get('/call-report-client', [CallReportController::class, 'callReportClient'])->name('client.call.report');
     Route::get('/call-detail/{id}', [CallReportController::class, 'callDetail'])->name('call.detail');
     Route::post('/update-payment/{id}', [CallReportController::class, 'updatePayment'])->name('payment.update');
 });

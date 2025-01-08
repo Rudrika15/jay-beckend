@@ -10,7 +10,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
-                <form action="{{ route('call.report') }}" method="GET" class="mb-2">
+                <form action="{{ route('client.call.report') }}" method="GET" class="mb-2">
                     @csrf
                     <div class="input-group">
                         <input type="date" value="{{ request()->query('start_date') }}" class="form-control"
@@ -28,11 +28,12 @@
                             <option value="completed" {{ request()->query('status') == 'completed' ? 'selected' : '' }}>
                                 Completed</option>
                         </select>
-                        <select name="staff_id" class="form-select " id="">
-                            <option value="" selected disabled>Select Staff</option>
-                            @foreach ($staffs as $staff)
-                                <option value="{{ $staff->id }}"
-                                    {{ request()->query('staff_id') == $staff->id ? 'selected' : '' }}>{{ $staff->name }}
+                        <select name="client_id" class="form-select " id="">
+                            <option value="" selected disabled>Select Client</option>
+                            @foreach ($clients as $client)
+                                <option value="{{ $client->id }}"
+                                    {{ request()->query('client_id') == $client->id ? 'selected' : '' }}>
+                                    {{ $client->name }}
                                 </option>
                             @endforeach
                         </select>
@@ -51,7 +52,7 @@
                 <div class="card">
 
                     <div class="card-header d-flex justify-content-between">
-                        Call Report
+                        Client Call Report
 
                     </div>
                     <div class="card-body">

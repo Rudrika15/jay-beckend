@@ -133,7 +133,12 @@
             <li class="nav-item active">
                 <a class="nav-link" href="{{ route('call.report') }}">
                     <i class="fas fa-fw fa-file"></i>
-                    <span>Call Report</span></a>
+                    <span>Staff Call Report</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ route('client.call.report') }}">
+                    <i class="fas fa-fw fa-file"></i>
+                    <span>Client Call Report</span></a>
             </li>
             <li class="nav-item active">
                 <a class="nav-link" href="{{ route('version.index') }}">
