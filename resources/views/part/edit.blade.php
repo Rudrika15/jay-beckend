@@ -45,6 +45,7 @@
             </div>
         </div>
         <div class="card-body">
+
             <form method="POST" action="{{ route('parts.update') }}" enctype="multipart/form-data">
                 @csrf
 

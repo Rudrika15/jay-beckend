@@ -68,7 +68,11 @@ class PartsController extends Controller
         }
         $data->detail = $request->detail;
         $data->save();
-        return redirect()->route('parts.index')->with('success', 'Parts Updated Successfully');
+        if ($data->type == "product") {
+            return redirect()->route('product.index')->with('success', 'Product Updated Successfully');
+        } else {
+            return redirect()->route('parts.index')->with('success', 'Parts Updated Successfully');
+        }
     }
 
     public function delete($id, $name)

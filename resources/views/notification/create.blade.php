@@ -85,7 +85,11 @@
                                             {{ $notification->created_at->diffForHumans() }}
                                         </small>
                                     </div>
-                                    {{ $notification->detail }}
+                                    <div class="mb-4">
+
+                                        {{ $notification->detail }}
+                                    </div>
+
                                 </td>
                             </tr>
                         @endforeach

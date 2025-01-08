@@ -41,11 +41,13 @@
                             <td>
                                 <a href="{{ route('parts.edit', ['id' => $product->id, 'name' => 'product']) }}"
                                     class="btn btn-info">
-                                    {{-- <i class="fas fa-edit"></i>Edit --}}
+                                    Edit
+                                    {{-- <i class="fas fa-edit"></i> --}}
                                 </a>
                                 <a href="{{ route('parts.delete', ['id' => $product->id, 'name' => 'product']) }}"
                                     class="btn btn-danger delete-btn">
-                                    {{-- <i class="fas fa-trash"></i>Delete --}}
+                                    Delete
+                                    {{-- <i class="fas fa-trash"></i> --}}
                                 </a>
                             </td>
                         </tr>

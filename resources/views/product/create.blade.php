@@ -53,8 +53,8 @@
                     <!-- Description Field -->
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         <div class="form-group">
-                            <strong>Description:</strong>
-                            <textarea name="description" placeholder="Description" class="form-control">{{ old('description') }}</textarea>
+                            <strong>Detail:</strong>
+                            <textarea name="description" placeholder="Detail" class="form-control">{{ old('description') }}</textarea>
                             @error('description')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror

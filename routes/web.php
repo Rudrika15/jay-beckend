@@ -43,7 +43,7 @@ Route::group(['middleware' => ['auth', 'isAdmin']], function () {
 
     Route::get('/product-list', [ProductController::class, 'index'])->name('product.index');
     Route::get('/product-create', [ProductController::class, 'create'])->name('product.create');
-    Route::post('/product-store', [ProductController::class, 'sto4re'])->name('product.store');
+    Route::post('/product-store', [ProductController::class, 'store'])->name('product.store');
 
     Route::get('/parts-list', [PartsController::class, 'index'])->name('parts.index');
     Route::get('/parts-create', [PartsController::class, 'create'])->name('parts.create');
