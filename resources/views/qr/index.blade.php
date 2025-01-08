@@ -38,10 +38,11 @@
                                 <img src="{{ asset('images/' . $data->image) }}" alt="" width="100px">
                             </td>
                             <td>{{ $data->status }}</td>
-                            <td><a href="{{ route('qr.edit', $data->id) }}" class="btn btn-info"><i class="fas fa-edit"></i>
+                            <td><a href="{{ route('qr.edit', $data->id) }}" class="btn btn-info">
+                                    {{-- <i class="fas fa-edit"></i> --}}
                                     Edit</a>
-                                <a href="{{ route('qr.delete', $data->id) }}" class="btn btn-danger"><i
-                                        class="fas fa-trash"></i>
+                                <a href="{{ route('qr.delete', $data->id) }}" class="btn btn-danger delete-btn">
+                                    {{-- <i class="fas fa-trash"></i> --}}
                                     Delete</a>
                             </td>
                         </tr>

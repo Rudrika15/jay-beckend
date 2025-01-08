@@ -2,6 +2,9 @@
 @section('title', 'Users')
 @section('content')
 
+    {{-- jquery cdn  --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     @if (session('success'))
         <div class="alert alert-success" role="alert">
             {{ session('success') }}
@@ -50,11 +53,13 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <a class="btn btn-info btn-sm" href="{{ route('users.show', $user->id) }}"><i
-                                            class="fas fa-eye"></i> Show</a>
+                                    <a class="btn btn-info btn-sm" href="{{ route('users.show', $user->id) }}">
+                                        {{-- <i class="fas fa-eye"></i>  --}}
+                                        Show</a>
                                     @can('user-edit')
-                                        <a class="btn btn-primary btn-sm" href="{{ route('users.edit', $user->id) }}"><i
-                                                class="fas fa-edit"></i> Edit</a>
+                                        <a class="btn btn-primary btn-sm" href="{{ route('users.edit', $user->id) }}">
+                                            {{-- <i class="fas fa-edit"></i> --}}
+                                            Edit</a>
                                     @endcan
                                     @can('user-delete')
                                         @if (!$user->hasRole('Admin'))
@@ -62,8 +67,9 @@
                                                 style="display:inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm"><i
-                                                        class="fas fa-trash"></i> Delete</button>
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    {{-- <i class="fas fa-trash"></i> --}}
+                                                    Delete</button>
                                             </form>
                                         @endif
                                     @endcan
@@ -76,4 +82,30 @@
         </div>
     </div>
     {!! $data->links('pagination::bootstrap-5') !!}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function() {
+            $('.btn-danger').on('click', function(e) {
+                e.preventDefault(); // Prevent form submission
+
+                var form = $(this).closest('form'); // Get the form for deletion
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) { // If confirmed, submit the form
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+
 @endsection

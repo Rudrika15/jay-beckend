@@ -2,6 +2,10 @@
 @section('title', 'Roles')
 
 @section('content')
+    {{-- jquery cdn  --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
 
     @session('success')
         <div class="alert alert-success" role="alert">
@@ -34,9 +38,13 @@
                         <td>{{ ++$i }}</td>
                         <td>{{ $role->name }}</td>
                         <td>
-                            <a class="btn btn-info btn-sm" href="{{ route('roles.show', $role->id) }}"><i class="fas fa-list"></i> Show</a>
+                            <a class="btn btn-info btn-sm" href="{{ route('roles.show', $role->id) }}">
+                                {{-- <i class="fas fa-list"></i>  --}}
+                                Show</a>
                             @can('role-edit')
-                                <a class="btn btn-primary btn-sm" href="{{ route('roles.edit', $role->id) }}"><i class="fas fa-pen-to-square"></i> Edit</a>
+                                <a class="btn btn-primary btn-sm" href="{{ route('roles.edit', $role->id) }}">
+                                    {{-- <i class="fas fa-pen-to-square"></i>  --}}
+                                    Edit</a>
                             @endcan
 
                             @can('role-delete')
@@ -44,7 +52,8 @@
                                     @csrf
                                     @method('DELETE')
 
-                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i>
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        {{-- <i class="fas fa-trash"></i> --}}
                                         Delete</button>
                                 </form>
                             @endcan
@@ -58,6 +67,31 @@
             {{-- @role('user')
  <h1>you are user</h1>
  @endrole --}}
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+                $(document).ready(function() {
+                    $('.btn-danger').on('click', function(e) {
+                        e.preventDefault(); // Prevent form submission
+
+                        var form = $(this).closest('form'); // Get the form for deletion
+
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: "You won't be able to revert this!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, delete it!',
+                            cancelButtonText: 'Cancel'
+                        }).then((result) => {
+                            if (result.isConfirmed) { // If confirmed, submit the form
+                                form.submit();
+                            }
+                        });
+                    });
+                });
+            </script>
 
         </div>
     </div>

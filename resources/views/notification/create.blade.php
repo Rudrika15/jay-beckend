@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-
-
-    @if(session('success'))
+    @if (session('success'))
         <div class="alert alert-success" role="alert">
             {{ session('success') }}
         </div>
@@ -13,7 +11,7 @@
     <div class="card">
         <div class="card-header py-3 d-flex justify-content-between h5">
             <div class=" pt-3">
-                Create Notificatiions
+                Create Notifications
             </div>
 
         </div>
@@ -75,7 +73,7 @@
                             <tr>
                                 <td class="align-middle">
                                     <a href="{{ route('delete.notification', $notification->id) }}"
-                                        class="btn btn-danger btn-sm">
+                                        class="btn btn-danger delete-btn btn-sm">
                                         Delete
                                     </a>
                                 </td>

@@ -59,11 +59,16 @@
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->phone }}</td>
                                     <td>{{ $user->email }}</td>
-                                    <td>{{ $user->total_hours }}</td>
+                                    <td>
+                                        @if ($user->total_minutes > 0)
+                                            {{ $user->total_hours }}
+                                        @else
+                                            <span class="text-danger">No working hours</span>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endif
                         @endforeach
-                        {{-- {{ $data->where('user_id','=', 2) }} --}}
                     </tbody>
                 </table>
             </div>

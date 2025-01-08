@@ -50,9 +50,9 @@
                                         <th scope="col">Check In</th>
                                         <th scope="col">On Break</th>
                                         <th scope="col">Off Break</th>
-                                        <th scope="col">Totle Break Time</th>
+                                        <th scope="col">Total Break Time</th>
                                         <th scope="col">Check Out</th>
-                                        <th scope="col">Totle Working Hours</th>
+                                        <th scope="col">Total Working Hours</th>
                                     </tr>
                                 </thead>
 
@@ -174,7 +174,7 @@
                                 <tbody>
                                     @foreach ($leaveApplications as $leave)
                                         <tr>
-                                            <td>{{ $leave->user->name }}</td>
+                                            <td>{{ $leave->user->name ?? '' }}</td>
                                             <td>{{ $leave->leaveType }}</td>
                                             <td> {{ $leave->startDate }} </td>
                                             <td> {{ $leave->endDate }}</td>

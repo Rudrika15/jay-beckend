@@ -31,7 +31,7 @@ class QrController extends Controller
         }
         $data->status = $request->status;
         $data->save();
-        return redirect()->back()->with('success', 'Qr Updated Successfully');
+        return redirect()->route('qr.index')->with('success', 'Qr Updated Successfully');
     }
     public function destroy($id)
     {

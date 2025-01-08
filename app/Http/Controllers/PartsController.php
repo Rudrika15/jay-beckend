@@ -46,7 +46,7 @@ class PartsController extends Controller
 
         $product->save();
 
-        return redirect()->back()->with('success', 'Product created successfully.');
+        return redirect()->route('parts.index')->with('success', 'Parts created successfully.');
     }
     public function edit($id)
     {
@@ -68,7 +68,7 @@ class PartsController extends Controller
         }
         $data->detail = $request->detail;
         $data->save();
-        return redirect()->back()->with('success', 'Product Updated Successfully');
+        return redirect()->route('parts.index')->with('success', 'Parts Updated Successfully');
     }
 
     public function delete($id, $name)

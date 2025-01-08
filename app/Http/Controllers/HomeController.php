@@ -57,7 +57,7 @@ class HomeController extends Controller
     public function notification()
     {
         $notifications = ModelsNotification::orderBy('id', 'desc')->get();
-        return view('notification.create',compact('notifications'));
+        return view('notification.create', compact('notifications'));
     }
 
     public function addNotification(Request $request)
@@ -66,26 +66,26 @@ class HomeController extends Controller
             'title' => 'required',
             'detail' => 'required',
         ]);
-        
+
         $notification = new ModelsNotification();
         $notification->title = $request->title;
         $notification->detail = $request->detail;
         $notification->save();
-    
+
         $users = User::where('token', '!=', null)->get();
-    
+
         $title = $request->title;
         $body = $request->detail;
-    
-        $serviceAccountPath = storage_path('attendance.json');
+
+        $serviceAccountPath = storage_path('app/public/attendance.json');
         $factory = (new Factory)->withServiceAccount($serviceAccountPath);
         $messaging = $factory->createMessaging();
-    
+
         foreach ($users as $user) {
-            if ($user->token) { 
+            if ($user->token) {
                 $message = CloudMessage::withTarget('token', $user->token)
                     ->withNotification(Notification::create($title, $body));
-                
+
                 try {
                     $messaging->send($message);
                 } catch (\Kreait\Firebase\Exception\Messaging\NotFound $e) {
@@ -97,7 +97,7 @@ class HomeController extends Controller
                 }
             }
         }
-    
+
         return redirect()->back()->with('success', 'Notification sent successfully!');
     }
 
@@ -108,5 +108,4 @@ class HomeController extends Controller
         $notification->delete();
         return redirect()->back()->with('success', 'Notification deleted successfully!');
     }
-    
 }

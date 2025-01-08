@@ -11,4 +11,9 @@ class Assign extends Model
     {
         return $this->belongsTo(Calllog::class, 'callId', 'id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'userId', 'id');
+    }
 }

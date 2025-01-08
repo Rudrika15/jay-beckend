@@ -22,6 +22,9 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ asset('assets/css/sb-admin-2.min.css') }}" rel="stylesheet">
+    {{-- sweet alert css --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 
 
@@ -87,12 +90,12 @@
             </li>
             <li class="nav-item active">
                 <a class="nav-link" href="{{ route('product.index') }}">
-                    <i class="fas fa-fw fa-users"></i>
-                    <span>Product </span></a>
+                    <i class="fas fa-fw fa-boxes"></i>
+                    <span>Products </span></a>
             </li>
             <li class="nav-item active">
                 <a class="nav-link" href="{{ route('parts.index') }}">
-                    <i class="fas fa-fw fa-users"></i>
+                    <i class="fas fa-fw fa-camera"></i>
                     <span>Parts </span></a>
             </li>
             <li class="nav-item active">
@@ -128,8 +131,13 @@
                     <span>Leave reports</span></a>
             </li>
             <li class="nav-item active">
+                <a class="nav-link" href="{{ route('call.report') }}">
+                    <i class="fas fa-fw fa-file"></i>
+                    <span>Call Report</span></a>
+            </li>
+            <li class="nav-item active">
                 <a class="nav-link" href="{{ route('version.index') }}">
-                    <i class="fas fa-fw fa-bell"></i>
+                    <i class="fas fa-fw fa-code-branch"></i>
                     <span>App Version</span></a>
             </li>
 
@@ -235,6 +243,7 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
@@ -250,6 +259,9 @@
             }
         });
     </script> --}}
+
+
+
 
 
 
@@ -269,6 +281,43 @@
     <!-- Page level custom scripts -->
     <script src="{{ asset('assets/js/demo/chart-area-demo.js') }}"></script>
     <script src="{{ asset('assets/js/demo/chart-pie-demo.js') }}"></script>
+    <!-- Include SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function() {
+            $('.delete-btn').on('click', function(e) {
+                e.preventDefault(); // Prevent the default link behavior
+
+                // Fetch the URL for deletion
+                var deleteUrl = $(this).attr('href');
+                if (!deleteUrl) {
+                    console.error(
+                        'Delete URL is undefined. Please check the href attribute of the button.');
+                    return;
+                }
+
+                // Show SweetAlert confirmation
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then(function(result) {
+                    if (result.isConfirmed) { // SweetAlert result for confirmation
+                        window.location.href = deleteUrl;
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+
 
 </body>
 

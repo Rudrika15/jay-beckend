@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CallReportController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\HomeController;
@@ -27,7 +28,7 @@ Route::get('/login', function () {
 Auth::routes();
 
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth', 'isAdmin']], function () {
     Route::get('/admin-home', [HomeController::class, 'index'])->name('home');
     Route::get('/approve/leave/{id}', [HomeController::class, 'leaveApproved'])->name('leave.approve');
     Route::resource('roles', RoleController::class);
@@ -42,7 +43,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/product-list', [ProductController::class, 'index'])->name('product.index');
     Route::get('/product-create', [ProductController::class, 'create'])->name('product.create');
-    Route::post('/product-store', [ProductController::class, 'store'])->name('product.store');
+    Route::post('/product-store', [ProductController::class, 'sto4re'])->name('product.store');
 
     Route::get('/parts-list', [PartsController::class, 'index'])->name('parts.index');
     Route::get('/parts-create', [PartsController::class, 'create'])->name('parts.create');
@@ -67,6 +68,10 @@ Route::group(['middleware' => ['auth']], function () {
     //Team members routes
     Route::get('/team-member-list/{id?}', [TeammemberController::class, 'index'])->name('team.member');
     Route::post('/team-member-create', [TeammemberController::class, 'store'])->name('team.member.store');
+
+    Route::get('/call-report', [CallReportController::class, 'callReport'])->name('call.report');
+    Route::get('/call-detail/{id}', [CallReportController::class, 'callDetail'])->name('call.detail');
+    Route::post('/update-payment/{id}', [CallReportController::class, 'updatePayment'])->name('payment.update');
 });
 
 Route::get('happy-birthday', [UserController::class, 'wish']);

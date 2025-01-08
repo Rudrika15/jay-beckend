@@ -13,6 +13,10 @@ class Calllog extends Model
     }
     public function assign()
     {
-        return $this->hasOne(Assign::class, 'callId', 'id');
+        return $this->hasMany(Assign::class, 'callId', 'id');
+    }
+    public function qr()
+    {
+        return $this->hasOne(Qr::class, 'id', 'qr_id');
     }
 }

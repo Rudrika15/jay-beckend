@@ -71,6 +71,7 @@ class UserController extends Controller
             'name' => 'required',
             'phone' => 'required|unique:users,phone|digits:10',
             'email' => 'required|email|unique:users,email',
+            'birthdate' => 'required|date',
             'password' => 'required|same:confirm-password',
             'roles' => 'required'
         ]);
@@ -206,14 +207,14 @@ class UserController extends Controller
 
         // Notify all users about the birthdays of others
         foreach ($usersWithBirthday as $userData) {
-            
+
             foreach ($allUsers as $otherUser) {
                 if ($otherUser->token) {
-                    
-                    
-                 $wish = "Today is {$userData->name}'s birthday! Let's join in the celebration and wish them a fantastic day filled with joy and happiness. 🎂🎁🥳";
 
-                     $message = CloudMessage::withTarget('token', $otherUser->token)
+
+                    $wish = "Today is {$userData->name}'s birthday! Let's join in the celebration and wish them a fantastic day filled with joy and happiness. 🎂🎁🥳";
+
+                    $message = CloudMessage::withTarget('token', $otherUser->token)
                         ->withNotification(Notification::create($title, $wish));
 
 

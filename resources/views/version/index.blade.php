@@ -29,10 +29,12 @@
                         <tr>
                             <td>{{ $data->version }}</td>
                             <td>
-                                <a class="btn btn-primary btn-sm" href="{{ route('version.edit', $data->id) }}"><i
-                                        class="fas fa-eye"></i> Edit</a>
-                                <a class="btn btn-danger btn-sm" href="{{ route('version.delete', $data->id) }}"><i
-                                        class="fas fa-edit"></i> Delete</a>
+                                <a class="btn btn-primary btn-sm" href="{{ route('version.edit', $data->id) }}">
+                                    {{-- <i class="fas fa-eye"></i> --}}
+                                    Edit</a>
+                                <a class="btn btn-danger btn-sm delete-btn" href="{{ route('version.delete', $data->id) }}">
+                                    {{-- <i class="fas fa-edit"></i>  --}}
+                                    Delete</a>
                             </td>
                         </tr>
                     @endforeach

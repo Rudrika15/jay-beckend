@@ -13,7 +13,7 @@
             </ul>
         </div>
     @endif
-    
+
 
     <div class="card">
         <div class="card-header py-3 d-flex justify-content-between h5">
@@ -54,7 +54,8 @@
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         <div class="form-group">
                             <strong>Birth Date:</strong>
-                            <input type="date" name="birthdate"  class="form-control">
+                            <input type="date" max="{{ \Carbon\Carbon::now()->format('d-m-Y') }}"
+                                pattern="\d{4}-\d{2}-\d{2}" id="birthdate" name="birthdate" class="form-control">
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -66,7 +67,8 @@
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         <div class="form-group">
                             <strong>Confirm Password:</strong>
-                            <input type="password" name="confirm-password" placeholder="Confirm Password" class="form-control">
+                            <input type="password" name="confirm-password" placeholder="Confirm Password"
+                                class="form-control">
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -82,11 +84,22 @@
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                        <button type="submit" class="btn btn-success btn-sm mt-2 mb-3"><i class="fa-solid fa-floppy-disk"></i>
+                        <button type="submit" class="btn btn-success btn-sm mt-2 mb-3"><i
+                                class="fa-solid fa-floppy-disk"></i>
                             Submit</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+    <script>
+        document.querySelector('#birthdate').addEventListener('input', function(e) {
+            const dateParts = this.value.split('-'); // Split the value into [year, month, day]
+
+            if (dateParts[0] && dateParts[0].length > 4) { // Check if year exceeds 4 digits
+                this.value = ''; // Reset the input field if invalid
+                alert('Year must be exactly 4 digits.');
+            }
+        });
+    </script>
 @endsection

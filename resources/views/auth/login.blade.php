@@ -80,8 +80,8 @@
 
                                         <div class="form-group">
                                             <input type="password" name="password"
-                                                class="form-control form-control-user" id="exampleInputPassword"
-                                                placeholder="Password" @error('password') is-invalid @enderror>
+                                                class="form-control form-control-user @error('password') is-invalid @enderror"
+                                                id="exampleInputPassword" placeholder="Password">
                                             @error('password')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>

@@ -36,10 +36,12 @@
                             <td>{{ $data->name }}</td>
                             <td>
 
-                                <a class="btn btn-danger" href="{{ route('team.delete', $data->id) }}"><i
-                                        class="fa fa-trash"></i> Delete</a>
-                                <a class="btn btn-info" href="{{ route('team.member', $data->id) }}"><i
-                                        class="fa fa-user"></i> Add Member</a>
+                                <a class="btn btn-danger delete-btn" href="{{ route('team.delete', $data->id) }}">
+                                    {{-- <i class="fa fa-trash "></i>  --}}
+                                    Delete</a>
+                                <a class="btn btn-info" href="{{ route('team.member', $data->id) }}">
+                                    {{-- <i class="fa fa-user"></i> --}}
+                                    Add Member</a>
                             </td>
                         </tr>
                     @endforeach

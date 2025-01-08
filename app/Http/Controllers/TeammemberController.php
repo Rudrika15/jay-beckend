@@ -43,7 +43,7 @@ class TeammemberController extends Controller
             'userId' => 'required',
             'teamId' => 'required',
         ]);
-         $userId = $request->userId;
+        $userId = $request->userId;
         $teamId = $request->teamId;
         foreach ($userId as $key => $value) {
             $teammember = new Teammember();
@@ -52,7 +52,7 @@ class TeammemberController extends Controller
             $teammember->save();
         }
 
-        return redirect()->back()->with('success', 'Team Member Added Successfully');
+        return redirect()->route('team.index')->with('success', 'Team Member Added Successfully');
     }
 
 

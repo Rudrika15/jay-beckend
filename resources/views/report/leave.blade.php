@@ -21,7 +21,7 @@
                 </div>
                 <div class="form-group col-md-3 d-flex align-items-end">
                     <button type="submit" class="btn btn-success mr-2">Find</button>
-                    <a href="{{ route('report.display') }}" class="btn btn-secondary" style="margin: 0px 0px 0px 20px;"><i
+                    <a href="{{ route('leave.report') }}" class="btn btn-secondary" style="margin: 0px 0px 0px 20px;"><i
                             class="fas fa-sync-alt"></i></a>
                 </div>
 
@@ -33,8 +33,6 @@
             <div class=" pt-2">
                 Leave report
             </div>
-
-
         </div>
         <div class="card-body">
             <div class="table table-responsive">
@@ -67,8 +65,6 @@
                     </tbody>
                 </table>
             </div>
-
-
         </div>
     </div>
 @endsection
