@@ -17,6 +17,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/show-attendance', [AttendanceController::class, 'index']);
     Route::get('/today-attendance', [AttendanceController::class, 'todayattendance']);
     Route::post('/attendance', [AttendanceController::class, 'store']);
+    Route::post('/update-attendance', [AttendanceController::class, 'update']);
     Route::get('/attendance/delete', [AttendanceController::class, 'deleteAttendance']);
 
 
@@ -29,12 +30,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // admin routes
     Route::get('/daily', [AdminController::class, 'dailyAttendance']);
+    Route::get('/staff-list', [AdminController::class, 'staffList']);
     Route::get('/leave-applications', [AdminController::class, 'leaveApplication']);
     Route::post('/leave-approval/{id}', [AdminController::class, 'approveLeave']);
     Route::post('/leave/cancel/{id}', [AdminController::class, 'cancelLeave']);
     Route::post('/report', [AdminController::class, 'report']);
 
     Route::get('/notifications', [AttendanceController::class, 'getNotifications']);
+    Route::post('/notification/delete/{id}', [AttendanceController::class, 'deleteNotification']);
     //task
     Route::get('/mytask', [TaskController::class, 'myTask']);
     Route::post('/task', [TaskController::class, 'addTask']);
@@ -43,8 +46,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/updateTask', [TaskController::class, 'updateTask']);
     Route::get('/allTask', [TaskController::class, 'allTask']);
     Route::get('/todaysLeave', [TaskController::class, 'todaysLeave']);
-
-
 
     Route::get('/client-list', [ApiController::class, 'clientlist']);
     Route::post('/create-call', [ApiController::class, 'createcall']);
@@ -58,9 +59,14 @@ Route::middleware('auth:sanctum')->group(function () {
     ROute::get('client-call-list', [ApiController::class, 'clientSideCallList']);
     Route::post('update-call', [ApiController::class, 'updateCall']);
 
-
     Route::post('/assign-task', [ApiController::class, 'assignTask']);
     Route::get('/qr-list', [ApiController::class, 'qrList']);
+
+    //user
+    Route::get('/users', [UserApiController::class, 'index']);
+    Route::post('/create-user', [UserApiController::class, 'store']);
+    Route::post('/update-user/{id}', [UserApiController::class, 'update']);
+    Route::post('/delete-user/{id}', [UserApiController::class, 'destroy']);
 });
 
 Route::get('getVersion', [TaskController::class, 'version']);

@@ -35,13 +35,18 @@
                             <td>{{ $no++ }}</td>
                             <td>{{ $data->name }}</td>
                             <td>
-
-                                <a class="btn btn-danger delete-btn" href="{{ route('team.delete', $data->id) }}">
-                                    {{-- <i class="fa fa-trash "></i>  --}}
-                                    Delete</a>
-                                <a class="btn btn-info" href="{{ route('team.member', $data->id) }}">
-                                    {{-- <i class="fa fa-user"></i> --}}
-                                    Add Member</a>
+                                <div class="d-flex gap-2 text-center">
+                                    <a class="btn btn-sm btn-danger delete-btn p-3"
+                                        href="{{ route('team.delete', $data->id) }}">
+                                        {{-- <i class="fa fa-trash "></i>  --}}
+                                        Delete</a>
+                                    <a class="btn btn-sm btn-info" href="{{ route('team.member', $data->id) }}">
+                                        {{-- <i class="fa fa-user"></i> --}}
+                                        Add Member</a>
+                                    <a href="{{ route('team.edit', $data->id) }}" class="btn btn-sm btn-primary">
+                                        Edit Team
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     @endforeach

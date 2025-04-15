@@ -108,6 +108,52 @@ class AdminController extends Controller
             'data' => array_values($userAttendance),  // Reset keys to sequential
         ], 200);
     }
+    public function staffList(Request $request)
+    {
+        $today = $request->date ?? Carbon::today()->toDateString();
+
+
+        $users = User::role('User')
+            ->with(['attendances' => function ($query) use ($today) {
+                $query->whereDate('date', $today);
+            }])->get()
+            ->map(function ($user) {
+                $totalBreakMinutes = 0;
+                $totalWorkingMinutes = 0;
+
+                foreach ($user->attendances as $attendance) {
+                    $onBreak = Carbon::parse($attendance->on_break);
+                    $offBreak = Carbon::parse($attendance->off_break);
+                    $checkin = Carbon::parse($attendance->checkin);
+                    $checkout = Carbon::parse($attendance->checkout);
+
+                    // Adjust for cases where offBreak or checkout is on the next day
+                    if ($offBreak->lt($onBreak)) {
+                        $offBreak = $offBreak->copy()->addDay();
+                    }
+                    if ($checkout->lt($checkin)) {
+                        $checkout = $checkout->copy()->addDay();
+                    }
+
+                    $breakDuration = $onBreak->diffInMinutes($offBreak);
+                    $workingDuration = $checkin->diffInMinutes($checkout) - $breakDuration;
+
+                    $totalBreakMinutes += $breakDuration;
+                    $totalWorkingMinutes += $workingDuration;
+                }
+
+                $user->totalBreakTime = intdiv($totalBreakMinutes, 60) . ' hours and ' . ($totalBreakMinutes % 60) . ' min';
+                $user->totalWorkingHours = intdiv($totalWorkingMinutes, 60) . ' hours and ' . ($totalWorkingMinutes % 60) . ' min';
+
+                return $user;
+            });
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Staff list fetched successfully',
+            'data' => $users,
+        ], 200);
+    }
 
     public function leaveApplication(Request $request)
     {

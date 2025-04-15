@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Assign extends Model
+    class Assign extends Model
 {
     //
     public function call()

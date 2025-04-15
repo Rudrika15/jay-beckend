@@ -37,7 +37,8 @@ class TeamController extends Controller
         $team->name = $request->name;
         $team->save();
 
-        return redirect()->route('team.index');
+        return redirect()->route('team.index')
+            ->with('success', 'Team Created Successfully');
     }
 
     /**
@@ -51,17 +52,27 @@ class TeamController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Team $team)
+    public function edit($id)
     {
-        //
+        $team = Team::find($id);
+        return view('team.edit', compact('team'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Team $team)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+        ]);
+
+        $team = Team::find($id);
+        $team->name = $request->name;
+        $team->save();
+
+        return redirect()->route('team.index')
+            ->with('success', 'Team Updated Successfully');
     }
 
     /**
@@ -70,6 +81,7 @@ class TeamController extends Controller
     public function destroy($id)
     {
         Team::find($id)->delete();
-        return redirect()->route('team.index');
+        return redirect()->route('team.index')
+            ->with('success', 'Team Deleted Successfully');
     }
 }

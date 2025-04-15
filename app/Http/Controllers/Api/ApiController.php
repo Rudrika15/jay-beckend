@@ -6,14 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Models\Assign;
 use App\Models\Calllog;
 use App\Models\Callog;
+use App\Models\Notification;
 use App\Models\Product;
 use App\Models\Qr;
 use App\Models\Team;
 use App\Models\Teammember;
 use App\Models\User;
+use App\Services\FirebaseService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification as FirebaseNotification;
+use Throwable;
 
 class ApiController extends Controller
 {
@@ -40,37 +47,81 @@ class ApiController extends Controller
     }
     public function createcall(Request $request)
     {
-        $validatedData = $request->validate([
-            'date' => 'required|date',
-            'description' => 'required|string',
-            'address' => 'required|string',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'date' => 'required|date',
+                'description' => 'required|string',
+                'address' => 'required|string',
+            ]);
 
-        $call = new Calllog();
-        $call->date = $request->date;
-        $call->description = $request->description;
-        $call->address = $request->address;
+            $call = new Calllog();
+            $call->date = $request->date;
+            $call->description = $request->description;
+            $call->address = $request->address;
 
-        if ($request->client_id) {
-            $call->userId = $request->client_id;
-        } else {
-            $call->userId = Auth::user()->id;
+            if ($request->client_id) {
+                $call->userId = $request->client_id;
+            } else {
+                $call->userId = Auth::user()->id;
+            }
+
+            if ($request->hasFile('photo')) {
+                $file = $request->file('photo');
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('images'), $filename);
+                $call->photo = $filename;
+            }
+
+            $call->save();
+
+            $user = User::role('Admin')->first();
+
+
+            // Send notification with Firebase
+            $title = "New Call Log Created";
+            $body = "A new call log has been created by " . Auth::user()->name;
+
+            $notification = new Notification();
+            $notification->title = $title;
+            $notification->detail = $body;
+            $notification->save();
+
+            $serviceAccountPath = storage_path('app/public/attendance.json');
+            $factory = (new Factory)->withServiceAccount($serviceAccountPath);
+            $messaging = $factory->createMessaging();
+
+            if ($user->token) {
+                $message = CloudMessage::withTarget('token', $user->token)
+                    ->withNotification(FirebaseNotification::create($title, $body));
+
+                try {
+                    $messaging->send($message);
+                } catch (\Kreait\Firebase\Exception\Messaging\NotFound $e) {
+                    Log::error('Token not found: ' . $user->token);
+                } catch (\Kreait\Firebase\Exception\Messaging\InvalidArgument $e) {
+                    Log::error('Invalid argument error with token: ' . $user->token);
+                } catch (\Exception $e) {
+                    Log::error('General error sending to token: ' . $user->token . '. Error: ' . $e->getMessage());
+                }
+            }
+            // Store notification in the database
+            $notification = new Notification();
+            $notification->title = $title;
+            $notification->detail = $body;
+            $notification->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Call log created successfully.',
+                'data' => $call,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+                'data' => []
+            ]);
         }
-
-        if ($request->hasFile('photo')) {
-            $file = $request->file('photo');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images'), $filename);
-            $call->photo = $filename;
-        }
-
-        $call->save();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Call log created successfully.',
-            'data' => $call,
-        ]);
     }
     public function getCalllog(Request $request)
     {
@@ -124,46 +175,161 @@ class ApiController extends Controller
     }
     public function chageStatus(Request $request)
     {
-        $calllog = Calllog::find($request->id);
-        $calllog->status = $request->status;
-        $calllog->save();
-        return response()->json([
-            'status' => true,
-            'message' => 'Call log status changed successfully.',
-            'data' => $calllog
-        ]);
+        try {
+
+            $request->validate([
+                'id' => 'required|exists:calllogs,id',
+                'status' => 'required|in:pending,completed,cancelled'
+            ]);
+            $calllog = Calllog::find($request->id);
+            $calllog->status = $request->status;
+            $calllog->save();
+
+            // Send notification with Firebase
+            $call = Calllog::find($request->id);
+            $calllog = Calllog::with('assign') // Load the 'assign.user' relationship
+                ->where('id', $request->id) // Filter by the provided ID
+                ->first(); // Get the first matching record
+
+            if (!$call) {
+                return response()->json(['message' => 'Calllog not found'], 404);
+            }
+
+            // Collect users from 'calllog.user' and 'assign.user'
+            $callUsers = collect();
+            if ($calllog->user) {
+                $callUsers->push($call->user); // Add the user from Calllog (if it has a direct user relationship)
+            }
+
+            foreach ($calllog->assign as $assign) {
+
+                if ($assign->user) {
+                    $callUsers->push($assign->user); // Add users from assign relationships
+                }
+            }
+            // return $callUsers;
+
+            // Get Admin users
+            $adminUsers = User::role('Admin')->get();
+
+            // Merge all users and remove duplicates
+            $allUsers = $callUsers->merge($adminUsers)->unique('id'); // Ensure unique users by ID
+
+            $tokens = $allUsers
+                ->filter(fn($user) => $user->token) // Ensure the user has a token
+                ->pluck('token') // Extract tokens
+                ->unique() // Remove duplicate tokens
+                ->toArray();
+
+            $title = "Call Log Status Changed";
+            $body = "The status of call #" . $request->id . " log has been changed to " . $request->status;
+
+            $notification = new Notification();
+            $notification->title = $title;
+            $notification->detail = $body;
+            $notification->save();
+
+            $serviceAccountPath = storage_path('app/public/attendance.json');
+            $factory = (new Factory)->withServiceAccount($serviceAccountPath);
+            $messaging = $factory->createMessaging();
+
+            $messages = array_map(
+                fn($token) => CloudMessage::withTarget('token', $token)
+                    ->withNotification(FirebaseNotification::create($title, $body)),
+                $tokens
+            );
+
+            // Send notifications in bulk if there are messages
+            if (count($messages) > 0) {
+                try {
+                    $messaging->sendAll($messages);
+                } catch (\Exception $e) {
+                    return response()->json(['error' => $e->getMessage()], 500);
+                }
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Call log status changed successfully.',
+                'data' => $call
+            ]);
+        } catch (Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
     }
 
     public function assignTask(Request $request)
     {
+        try {
+            $data = $request->all();
+            // Store multiple assigns
+            $now = Carbon::now();
+            $assignments = array_map(function ($userId) use ($data, $now) {
+                return [
+                    'userId' => $userId,
+                    'callId' => $data['callId'],
+                    'slot' => $data['slot'],
+                    'date' => $data['date'],
+                    'charge' => $data['charge'],
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+            }, $data['userId']);
+
+            Assign::insert($assignments);
+            $call = Calllog::find($data['callId']);
+            $call->status = 'allocated';
+            $call->save();
+
+            $user = User::find($data['userId']);
+            $callId = $data['callId'];
+            unset($data['callId']);
+
+            $call = Calllog::with('assign.user.roles')->find($callId);
+            $tokens = $user->pluck('token')->toArray();
+            $userName = implode(', ', $user->pluck('name')->toArray());
+            $title = ' Call Assigned';
+            $body = "Call #" . $callId . " has been assigned to " . $userName;
 
 
-        $data = $request->all();
+            $notification = new Notification();
+            $notification->title = $title;
+            $notification->detail = $body;
+            $notification->save();
+
+            $serviceAccountPath = storage_path('app/public/attendance.json');
+            $factory = (new Factory)->withServiceAccount($serviceAccountPath);
+            $messaging = $factory->createMessaging();
 
 
-        // Store multiple assigns
-        $now = Carbon::now();
-        $assignments = array_map(function ($userId) use ($data, $now) {
-            return [
-                'userId' => $userId,
-                'callId' => $data['callId'],
-                'slot' => $data['slot'],
-                'date' => $data['date'],
-                'charge' => $data['charge'],
-                'created_at' => $now,
-                'updated_at' => $now,
-            ];
-        }, $data['userId']);
+            $message = array_map(
+                function ($tokens) use ($title, $body) {
+                    if (isset($tokens) && $tokens != null)
+                        return CloudMessage::withTarget('token', $tokens)
+                            ->withNotification(FirebaseNotification::create($title, $body));
+                },
+                $tokens
+            );
+            if (count($message) > 0) {
+                try {
+                    $messaging->sendAll($message);
+                } catch (\Exception $e) {
+                    return response()->json(['error' => $e->getMessage()], 500);
+                }
+            }
 
-        Assign::insert($assignments);
-        $call = Calllog::find($data['callId']);
-        $call->status = 'allocated';
-        $call->save();
-        return response()->json([
-            'status' => true,
-            'message' => 'Task assigned successfully.',
-            'data' => $assignments
-        ]);
+            return response()->json([
+                'status' => true,
+                'message' => 'Task assigned successfully.',
+                'data' => $assignments
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+                'data' => []
+            ]);
+        }
     }
 
     public function getParts()
@@ -264,6 +430,69 @@ class ApiController extends Controller
             $call->status = 'completed';
             $call->save();
 
+            $calllog = Calllog::with('assign') // Load the 'assign.user' relationship
+                ->where('id', $request->id) // Filter by the provided ID
+                ->first(); // Get the first matching record
+
+            if (!$call) {
+                return response()->json(['message' => 'Calllog not found'], 404);
+            }
+
+            // Collect users from 'calllog.user' and 'assign.user'
+            $callUsers = collect();
+            if ($calllog->user) {
+                $callUsers->push($call->user); // Add the user from Calllog (if it has a direct user relationship)
+            }
+
+            foreach ($calllog->assign as $assign) {
+
+                if ($assign->user) {
+                    $callUsers->push($assign->user); // Add users from assign relationships
+                }
+            }
+            // return $callUsers;
+
+            // Get Admin users
+            $adminUsers = User::role('Admin')->get();
+
+            // Merge all users and remove duplicates
+            $allUsers = $callUsers->merge($adminUsers)->unique('id'); // Ensure unique users by ID
+
+            $tokens = [];
+            foreach ($allUsers as $user) {
+                if ($user->token) {
+                    $tokens[] = $user->token;
+                }
+            }
+
+            $title = 'Task Completed';
+            $body = "Task Completed Successfully";
+
+            $notification = new Notification();
+            $notification->title = $title;
+            $notification->detail = $body;
+            $notification->save();
+
+            $serviceAccountPath = storage_path('app/public/attendance.json');
+            $factory = (new Factory)->withServiceAccount($serviceAccountPath);
+            $messaging = $factory->createMessaging();
+
+
+            $message = array_map(
+                function ($tokens) use ($title, $body) {
+                    if (isset($tokens) && $tokens != null)
+                        return CloudMessage::withTarget('token', $tokens)
+                            ->withNotification(FirebaseNotification::create($title, $body));
+                },
+                $tokens
+            );
+            if (count($message) > 0) {
+                try {
+                    $messaging->sendAll($message);
+                } catch (\Exception $e) {
+                    return response()->json(['error' => $e->getMessage()], 500);
+                }
+            }
             return response()->json([
                 'status' => true,
                 'message' => 'Call updated successfully.',

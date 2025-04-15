@@ -62,6 +62,8 @@ Route::group(['middleware' => ['auth', 'isAdmin']], function () {
     Route::get('/team-list', [TeamController::class, 'index'])->name('team.index');
     Route::get('/team-create', [TeamController::class, 'create'])->name('team.create');
     Route::post('/team-store', [TeamController::class, 'store'])->name('team.store');
+    Route::get('/team-edit/{id?}', [TeamController::class, 'edit'])->name('team.edit');
+    Route::post('/team-update/{id?}', [TeamController::class, 'update'])->name('team.update');
     Route::get('/team-delete/{id?}', [TeamController::class, 'destroy'])->name('team.delete');
 
 

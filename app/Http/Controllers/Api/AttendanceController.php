@@ -30,6 +30,82 @@ class AttendanceController extends Controller
         $this->firebaseService = $firebaseService;
     }
 
+    public function update(Request $request)
+    {
+        //type field is required and based on type update records otherwise do nothing
+        $validator = Validator::make($request->all(), [
+            'type' => 'required|in:checkin,checkout,on_break,off_break',
+            'userId' => 'required|exists:users,id',
+            'date' => 'date_format:Y-m-d|before_or_equal:today',
+        ], [
+            'type.required' => 'The type field is required.',
+            'type.in' => 'The type must be one of the following values: checkin, checkout, on_break, off_break.',
+            'time.required' => 'The time field is required.',
+            'time.date_format' => 'The time must be in the format HH:MM:SS.',
+            'userId.required' => 'The user ID field is required.',
+            'userId.exists' => 'The user ID does not exist.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation errors occurred.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+
+        $userId = $request->userId;
+
+        // Get the current time in case a field is not provided
+        $currentTime = Carbon::now('Asia/Kolkata')->format('H:i:s');
+        if ($request->time) {
+            $request->time = Carbon::parse($request->time)->format('H:i:s');
+        }
+
+        // Find or create the attendance record for today
+        $attendance = Attendance::firstOrNew(
+            ['user_id' => $userId, 'date' => $request->date ?? now()->toDateString()]
+        );
+
+        // Update the fields with provided time or set live time
+        if ($request->type === 'checkin') {
+            $attendance->checkin = $request->time ?? $currentTime;
+        }
+
+        if ($request->type === 'checkout') {
+            $attendance->checkout = $request->time ?? $currentTime;
+        }
+
+        if ($request->type === 'on_break') {
+
+            $attendance->on_break = $request->time ?? $currentTime;
+        }
+
+        if ($request->type === 'off_break') {
+
+            $attendance->off_break = $request->time ?? $currentTime;
+        }
+
+        // Calculate total hours if check-in and check-out times are provided
+        if ($attendance->checkin && $attendance->checkout) {
+            $checkin_seconds = strtotime($attendance->checkin);
+            $checkout_seconds = strtotime($attendance->checkout);
+            $onbreak_seconds = $attendance->on_break ? strtotime($attendance->on_break) : 0;
+            $offbreak_seconds = $attendance->off_break ? strtotime($attendance->off_break) : 0;
+
+            $total_working_seconds = $checkout_seconds - $checkin_seconds - max(0, $offbreak_seconds - $onbreak_seconds);
+
+            $attendance->total_hours = gmdate('H:i:s', $total_working_seconds);
+        }
+
+        $attendance->save();
+
+        return response()->json([
+            'message' => 'Attendance updated successfully.',
+            'attendance' => $attendance
+        ], 201);
+    }
+
 
     public function store(Request $request)
     {
@@ -136,35 +212,35 @@ class AttendanceController extends Controller
             $attendance = Attendance::create($attendanceData);
         }
 
-        // Notification message based on the timekey
-        // $message = '';
-        // switch ($timekey) {
-        //     case 'checkin':
-        //         $title = "Check in";
-        //         $message = "{$user->name} just checked in.";
-        //         break;
-        //     case 'on_break':
-        //         $title = "On break.";
-        //         $message = "{$user->name} is on break.";
-        //         break;
-        //     case 'off_break':
-        //         $title = "Off break.";
-        //         $message = "{$user->name} is off break.";
-        //         break;
-        //     case 'checkout':
-        //         $title = "Checked out.";
-        //         $message = "{$user->name} just checked out.";
-        //         break;
-        // }
+        //     // Notification message based on the timekey
+        //     // $message = '';
+        //     // switch ($timekey) {
+        //     //     case 'checkin':
+        //     //         $title = "Check in";
+        //     //         $message = "{$user->name} just checked in.";
+        //     //         break;
+        //     //     case 'on_break':
+        //     //         $title = "On break.";
+        //     //         $message = "{$user->name} is on break.";
+        //     //         break;
+        //     //     case 'off_break':
+        //     //         $title = "Off break.";
+        //     //         $message = "{$user->name} is off break.";
+        //     //         break;
+        //     //     case 'checkout':
+        //     //         $title = "Checked out.";
+        //     //         $message = "{$user->name} just checked out.";
+        //     //         break;
+        //     // }
 
-        // // Sending notifications to all users except the one who triggered the event
-        // $users = User::where('token', '!=', null)
-        //     ->where('id', '!=', $userId)
-        //     ->get();
+        //     // // Sending notifications to all users except the one who triggered the event
+        //     // $users = User::where('token', '!=', null)
+        //     //     ->where('id', '!=', $userId)
+        //     //     ->get();
 
-        // foreach ($users as $user) {
-        //     $this->firebaseService->sendNotification($user->token, $title, $message);
-        // }
+        //     // foreach ($users as $user) {
+        //     //     $this->firebaseService->sendNotification($user->token, $title, $message);
+        //     // }
 
         return response()->json([
             'message' => 'Attendance recorded successfully',
@@ -522,6 +598,24 @@ class AttendanceController extends Controller
 
         return response()->json([
             'message' => 'Get Notifications successfully',
+            'data' => $notification
+        ], 200);
+    }
+
+    public function deleteNotification($id)
+    {
+        $notification = Notification::find($id);
+        if (!$notification) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Notification not found',
+                'data' => []
+            ], 404);
+        }
+        $notification->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Notification deleted successfully',
             'data' => $notification
         ], 200);
     }
